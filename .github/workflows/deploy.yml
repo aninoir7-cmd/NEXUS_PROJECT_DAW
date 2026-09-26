@@ -32,11 +32,11 @@ jobs:
           unzip -o NEXUS_PROJECT_DAW_PWA.zip -d nexus_build
 
       - name: Instalar dependencias
-        working-directory: nexus_build/nexus_pwa
+       working-directory: nexus_build
         run: npm install
 
       - name: Construir NEXUS
-        working-directory: nexus_build/nexus_pwa
+       working-directory: nexus_build
         run: npm run build -- --base=/NEXUS_PROJECT_DAW/
 
       - name: Subir aplicación
