@@ -42,7 +42,7 @@ jobs:
       - name: Subir aplicación
         uses: actions/upload-pages-artifact@v4
         with:
-          path: nexus_build/nexus_pwa/dist
+          path: nexus_build/dist
 
   deploy:
     needs: build
