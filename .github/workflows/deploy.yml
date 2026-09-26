@@ -1,0 +1,58 @@
+name: Deploy NEXUS PROJECT DAW
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Preparar proyecto
+        run: |
+          mkdir -p nexus_build
+          unzip -o NEXUS_PROJECT_DAW_PWA.zip -d nexus_build
+
+      - name: Instalar dependencias
+        working-directory: nexus_build/nexus_pwa
+        run: npm install
+
+      - name: Construir NEXUS
+        working-directory: nexus_build/nexus_pwa
+        run: npm run build -- --base=/NEXUS_PROJECT_DAW/
+
+      - name: Subir aplicación
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: nexus_build/nexus_pwa/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Publicar NEXUS
+        id: deployment
+        uses: actions/deploy-pages@v4
